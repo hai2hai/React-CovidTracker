@@ -1,0 +1,31 @@
+.infoBox {
+    flex: 1;
+    cursor: pointer;
+    transition: box-shadow 300ms ease;
+}
+
+.infoBox:hover {
+    box-shadow: 0 0 10px 3px rgba(0, 0, 0, .2) !important;
+}
+
+.infoBox:not(:last-child) {
+    margin-right: 15px;
+}
+
+.infoBox__newCases {
+    color: #cc1034;
+    font-weight: 600;
+    font-size: 1.75rem;
+    margin-bottom: .5rem;
+}
+
+.infoBox__total {
+    color: #6c757d;
+    font-weight: 700 !important;
+    font-size: .8rem !important;
+    margin-top: 15px !important;
+}
+
+.infoBox--selected {
+    box-shadow: 0 0 15px 4px rgba(0, 0, 0, .2) !important;
+}
