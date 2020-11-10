@@ -1,0 +1,36 @@
+.app__graph-group {
+    display: flex;
+}
+
+.app__graph {
+    flex-basis: 50%;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.app__graph h3 {
+    margin-bottom: 15px;
+}
+
+.app__graph .graph__item {
+    flex-grow: 1;
+}
+
+.graph__item {
+    max-width: 498px;
+}
+
+@media (max-width: 990px) {
+    .app__graph-group {
+        flex-direction: column;
+    }
+
+    .app__graph {
+        min-height: 250px;
+    }
+
+    .graph__item {
+        max-width: 100%;
+    }
+}

@@ -26,6 +26,8 @@ const casesTypeColors = {
   },
 };
 
+export {casesTypeColors};
+
 export const SortData = (data) => {
     const sortedData = [...data];
     return sortedData.sort((a, b) =>b.cases - a.cases);
@@ -41,6 +43,7 @@ export const showDataOnMap = (data, casesType = "cases") =>
       fillColor={casesTypeColors[casesType].hex}
       fillOpacity={0.2}
       weight={2}
+      key={country.country}
       radius={
         Math.sqrt(country[casesType]) * casesTypeColors[casesType].multiplier
       }
@@ -62,3 +65,37 @@ export const showDataOnMap = (data, casesType = "cases") =>
       </Popup>
     </Circle>
   ));
+
+  export const buildChartData = (data, caseType, select, type) => {
+    const chartData = [];
+    const dataArray = select === 'worldwide' 
+                                ? Object.entries(data[caseType]) 
+                                : Object.entries(data['timeline'][caseType]);
+    let lastDataPoint;
+
+    for (let [date, cases = 0] of dataArray) {
+        if (lastDataPoint) {
+            let newDataPoint = type === 0 ? {
+                x: date,
+                y: cases - lastDataPoint < 0 ? 0 : cases - lastDataPoint,
+            } : {
+              x: date,
+              y: cases,
+            };
+            chartData.push(newDataPoint);
+        }
+        lastDataPoint = cases;
+    }
+    return chartData;
+};
+
+export const setPieChartData = (data) => {
+  const total = data.cases;
+  let deaths = Number.parseFloat((data.deaths / total) * 100).toFixed(2);
+  let recovered = Number.parseFloat((data.recovered / total) * 100).toFixed(2);
+  let active = Number.parseFloat((data.active / total) * 100).toFixed(2);
+  return [{
+    data: [deaths, recovered, active],
+    backgroundColor: ['#fb4443', '#7dd71d', '#497ff4']
+  }];
+}

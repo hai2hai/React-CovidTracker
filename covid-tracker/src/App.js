@@ -3,10 +3,12 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import InfoBox from './InfoBox';
 import MapWorld from './MapWorld';
-import Table from './Table';
+import TableData from './TableData';
 import LineGraph from './LineGraph';
+import PieChart from './PieChart';
+import FilterTable from './FilterTable';
 import numeral from 'numeral';
-import {SortData, prettyPrintStat} from './utils';
+import { SortData, prettyPrintStat, setPieChartData } from './utils';
 import {
   MenuItem,
   FormControl,
@@ -21,17 +23,19 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [mapCountries, setMapCountries] = useState([]);
-  const [defautCountry, setdefautCountry] = useState("worldwide");
+  const [selectedCountry, setSelectedCountry] = useState("worldwide");
   const [countryInfo, setCountryInfo] = useState({})
   const [mapCenter, setMapCenter] = useState({ lat: 12.61, lng: 3.90 });
   const [mapZoom, setMapZoom] = useState(3);
   const [caseType, setCaseType] = useState("cases");
+  const [dataset, setDataset] = useState([]);
 
   useEffect(() => {
     fetch('https://disease.sh/v3/covid-19/all')
     .then(response => response.json())
     .then(data => {
       setCountryInfo(data);
+      setDataset(setPieChartData(data));
     })
   }, [])
 
@@ -68,8 +72,9 @@ function App() {
     await fetch(url)
     .then(response => response.json())
           .then(data => {
-            setdefautCountry(countryCode);
+            setSelectedCountry(countryCode);
             setCountryInfo(data);
+            setDataset(setPieChartData(data));
 
             if (countryCode === 'worldwide') {
               setMapZoom(3);
@@ -84,14 +89,36 @@ function App() {
 
   return (
     <div className="App">
-      <div className="app__left">
+      <h1 className='App__title'>COVID19 TRACKER</h1>
 
-        {/* Header */}
-        <div className="app__header">
-          <h1>COVID19 TRACKER</h1>
+      <div className="App__top">
+        <div className="app__left">
 
+          {/* Graph */}
+          <div className='app__graph-group'>
+            <div className="app__graph">
+              <h3 className="">Daily new {caseType}</h3>
+              <LineGraph className={'graph__item'} caseType={caseType} select={selectedCountry} type={0}/>
+            </div>
+            <div className="app__graph">
+              <h3 className="">Total {caseType}</h3>
+              <LineGraph className={'graph__item'} caseType={caseType} select={selectedCountry} type={1}/>
+            </div>
+          </div>
+
+          {/* Map */}
+          <MapWorld casesType={caseType}
+            countries={mapCountries}
+            center={mapCenter}
+            zoom={mapZoom}
+          />
+        </div>
+
+        <Card className="app__right">
+        <CardContent>
+        {/* Title + Select Dropdown */}
           <FormControl className="app__dropdown">
-            <Select variant="outlined" value={defautCountry} onChange={onCountryChange}>
+            <Select variant="outlined" value={selectedCountry} onChange={onCountryChange}>
               <MenuItem value="worldwide" key="">Worldwide</MenuItem>
               {
                 countries.map(country => (
@@ -105,53 +132,44 @@ function App() {
             </Select>
           </FormControl>
 
-        </div>
-        {/* Title + Select Dropdown */}
-
         {/* Stats */}
         <div className="app__stats">
           <InfoBox active={caseType === 'cases'}
                   onClick={e => setCaseType('cases')} 
-                  title="Covid19 Cases" 
+                  title="Total Cases" 
                   cases={prettyPrintStat(countryInfo.todayCases)} 
-                  total={numeral(countryInfo.cases).format('0,0')} />
+                  total={numeral(countryInfo.cases).format('0,0')} 
+                  isBlue />
 
           <InfoBox active={caseType === 'recovered'}
                   onClick={e => setCaseType('recovered')} 
                   title="Recovers" 
                   cases={prettyPrintStat(countryInfo.todayRecovered)} 
-                  total={numeral(countryInfo.recovered).format('0,0')} />
+                  total={numeral(countryInfo.recovered).format('0,0')} 
+                  isGreen />
 
           <InfoBox active={caseType === 'deaths'}
                   onClick={e => setCaseType('deaths')} 
                   title="Deaths" 
                   cases={prettyPrintStat(countryInfo.todayDeaths)} 
-                  total={numeral(countryInfo.deaths).format('0,0')} />
+                  total={numeral(countryInfo.deaths).format('0,0')} 
+                  isRed />
         </div>
-
-        {/* Map */}
-        <MapWorld casesType={caseType}
-          countries={mapCountries}
-          center={mapCenter}
-          zoom={mapZoom}
-        />
-      </div>
-
-      <Card className="app__right">
-        <CardContent>
-
-          <h3>Live cases by country</h3>
-          {/* Table */}
-          <Table countries={tableData}/>
-
-            <h3 className="app__chartTitle">Worldwide new {caseType}</h3>
-          {/* Graph */}
-          <LineGraph className='app__graph' caseType={caseType}/>
-
+        <PieChart data={dataset}/>
         </CardContent>
       </Card>
+      </div>
 
-    </div>
+      {/* Table */}
+      <div className='App__bottom'>
+        <div className='app__table__header'>
+            <h3 className='app__tableTitle'>Live cases by country</h3>
+            <FilterTable target={document.querySelector('.MuiTable-root')}/>
+          </div>
+          <TableData countries={tableData}/>
+        </div>
+      </div>
+
   );
 }
 

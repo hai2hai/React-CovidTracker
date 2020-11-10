@@ -1,15 +1,13 @@
 .infoBox {
     flex: 1;
+    margin-top: 15px;
     cursor: pointer;
     transition: box-shadow 300ms ease;
+    text-indent: 15px;
 }
 
 .infoBox:hover {
     box-shadow: 0 0 10px 3px rgba(0, 0, 0, .2) !important;
-}
-
-.infoBox:not(:last-child) {
-    margin-right: 15px;
 }
 
 .infoBox__newCases {
@@ -28,4 +26,24 @@
 
 .infoBox--selected {
     box-shadow: 0 0 15px 4px rgba(0, 0, 0, .2) !important;
+    border-left: 15px solid #3974f5;
+}
+
+.infoBox--green {
+    border-color: rgb(11, 163, 11);
+}
+
+.infoBox--red {
+    border-color: #cc1034;
+}
+
+.infoBox__newCases {
+    color:#3974f5;
+}
+.infoBox__newCases--green {
+    color:rgb(11, 163, 11);
+}
+
+.infoBox__newCases--red {
+    color:#cc1034;
 }

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {Line} from 'react-chartjs-2';
 import numeral from 'numeral';
+import './LineGraph.css';
+import {buildChartData} from './utils';
 
 const options = {
     legend: {
@@ -48,38 +50,43 @@ const options = {
     },
 };
 
-const buildChartData = (data, caseType = "cases") => {
-    const chartData = [];
-    const dataArray = Object.entries(data[caseType]);
-    let lastDataPoint;
-
-    for (let [date, cases] of dataArray) {
-        if (lastDataPoint) {
-            let newDataPoint = {
-                x: date,
-                y: cases - lastDataPoint,
-            };
-            chartData.push(newDataPoint);
-        }
-        lastDataPoint = cases;
-    }
-    return chartData;
+const casesTypeColors = {
+    cases: {
+      hex: "#497ff4",
+      rgb: "rgba(151, 194, 227, 0.5)",
+    },
+    recovered: {
+      hex: "#7dd71d",
+      rgb: "rgba(125, 215, 29, 0.5)",
+    },
+    deaths: {
+      hex: "#CC1034",
+      rgb: "rgba(204, 16, 52, 0.5)",
+    },
 };
 
-function LineGraph({caseType = 'cases', ...props}) {
+function LineGraph({caseType = 'cases', select = 'worldwide', type = 0, ...props}) {
     const [data, setdata] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
-            await fetch('https://disease.sh/v3/covid-19/historical/all?lastdays=120')
-            .then(response => response.json())
+            let url = select === 'worldwide' 
+                                ? 'https://disease.sh/v3/covid-19/historical/all?lastdays=120'
+                                : `https://disease.sh/v3/covid-19/historical/${select}?lastdays=120`;
+            await fetch(url)
+            .then(response => {
+                if (response.status === 200)
+                    return response.json();
+            })
             .then(data => {
-                let chartData = buildChartData(data, caseType);
-                setdata(chartData);
+                if (data) {
+                    let chartData = buildChartData(data, caseType, select, type);
+                    setdata(chartData);
+                }
             })
         }
         fetchData();
-    }, [caseType])
+    }, [caseType, select, type])
 
     return (
         <div className={props.className}>
@@ -88,8 +95,8 @@ function LineGraph({caseType = 'cases', ...props}) {
                     datasets: [
                         {
                             data: data,
-                            backgroundColor: "rgba(204, 16, 52, 0.5)",
-                            borderColor: '#CC1034',
+                            backgroundColor: casesTypeColors[caseType]['rgb'],
+                            borderColor: casesTypeColors[caseType]['hex'],
                             borderWidth: 2,
                             pointHitRadius: 3,
                             pointHoverBackgroundColor: 'rgba(204, 16, 52, 1)',

@@ -6,24 +6,32 @@ body {
   background: #ececec;
 }
 
-.App {
-  display: flex;
-  justify-content: space-evenly;
-  flex-direction: row;
+.App__top,
+.App__bottom {
   padding: 20px;
   margin-top: 10px;
 }
 
-.app__header h1 {
+.App__top {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+  padding-top: 2em;
+}
+
+.App__title {
+  padding: 20px 0 0 20px;
+  margin-top: 10px;
   color: #d82747;
 }
 
 .app__left {
   flex-grow: 0.8;
+  margin-right: 10px;
 }
 
 .app__right {
-  width: 30vw;
+  min-width: 30vw;
   display: flex;
   flex-direction: column;
 }
@@ -34,38 +42,49 @@ body {
   flex-grow: 1;
 }
 
-.app__graph {
-  flex-grow: 1;
-}
-
-.app__header {
+/* .app__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2em;
-}
+} */
 
 .app__stats {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
 }
 
-.app__chartTitle {
+/* .app__chartTitle {
   margin-top: 20px;
-}
+} */
 
 .app__dropdown {
   background: white;
 }
 
+.app__table__header {
+  margin: 20px 0 15px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.app__tableTitle {
+  color: rgb(88, 88, 88);
+}
+
 @media (max-width: 990px) {
-  .App {
+  .App__top {
     flex-direction: column;
   }
 
   .app__right {
     margin-top: 10px;
-    width: 100%;
+    width: 90vw;
+    order: 1;
+  }
+
+  .app__left {
+    order: 2;
   }
 
 }
