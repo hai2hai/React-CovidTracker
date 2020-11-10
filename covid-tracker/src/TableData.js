@@ -10,6 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 
+// Styling
 const useStyles = makeStyles(theme => ({
     root: {
       width: '100%',
@@ -41,18 +42,11 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
-
 function createData(name, cases, deaths, recorvered, casesPerOneMil) {
     return { name, cases, deaths, recorvered, casesPerOneMil };
 }
 
+// -------------------Sorting--------------------- //
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -78,6 +72,15 @@ function stableSort(array, comparator) {
   });
   return stabilizedThis.map((el) => el[0]);
 }
+// ------------------------------------------------ //
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
 
 const headCells = [
   { id: 'name', numeric: false, disablePadding: false, label: 'Name' },

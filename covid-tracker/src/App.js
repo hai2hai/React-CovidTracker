@@ -20,15 +20,15 @@ import 'leaflet/dist/leaflet.css';
 
 
 function App() {
-  const [countries, setCountries] = useState([]);
+  const [countries, setCountries] = useState([]); // data for select Menu
   const [tableData, setTableData] = useState([]);
   const [mapCountries, setMapCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("worldwide");
-  const [countryInfo, setCountryInfo] = useState({})
+  const [countryInfo, setCountryInfo] = useState({}) //set data for info box
   const [mapCenter, setMapCenter] = useState({ lat: 12.61, lng: 3.90 });
   const [mapZoom, setMapZoom] = useState(3);
   const [caseType, setCaseType] = useState("cases");
-  const [dataset, setDataset] = useState([]);
+  const [dataset, setDataset] = useState([]); //set data for pie chart
 
   useEffect(() => {
     fetch('https://disease.sh/v3/covid-19/all')
